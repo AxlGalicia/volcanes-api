@@ -15,10 +15,10 @@ namespace volcanes_api.Controllers
     public class VolcanesController : ControllerBase
     {
         private readonly volcanesDBContext _context;
-        private readonly ILogger<volcanesDBContext> _logger;
+        private readonly ILogger<VolcanesController> _logger;
 
         public VolcanesController(volcanesDBContext context,
-                                    ILogger<volcanesDBContext> logger)
+                                    ILogger<VolcanesController> logger)
         {
             _context = context;
             _logger = logger;

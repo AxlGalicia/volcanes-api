@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>volcanes_api</RootNamespace>
+    <UserSecretsId>dc2e3acd-e653-441c-996b-39d0880a322d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

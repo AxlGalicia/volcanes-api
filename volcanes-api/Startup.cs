@@ -18,7 +18,7 @@ namespace volcanes_api
             services.AddSwaggerGen();
             services.AddDbContext<volcanesDBContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("Default"));
+                options.UseSqlServer(Configuration["ConnectionStrings"]);
             });
             services.AddLogging();
 
