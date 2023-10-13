@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using volcanes_api.Interfaces;
 using volcanes_api.Models;
+using volcanes_api.Services;
 
 namespace volcanes_api
 {
@@ -22,6 +24,7 @@ namespace volcanes_api
             });
             services.AddLogging();
             services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<ISpacesDigitalOceanService,SpacesDigitalOceanService>();
 
             //services.AddCors(opciones => {
             //    opciones.AddDefaultPolicy(builder => {
