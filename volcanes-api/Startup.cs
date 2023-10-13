@@ -21,6 +21,7 @@ namespace volcanes_api
                 options.UseSqlServer(Configuration["ConnectionStrings"]);
             });
             services.AddLogging();
+            services.AddSingleton<IConfiguration>(Configuration);
 
             //services.AddCors(opciones => {
             //    opciones.AddDefaultPolicy(builder => {
