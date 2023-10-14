@@ -1,4 +1,5 @@
 using Amazon.S3.Model;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -135,6 +136,54 @@ namespace volcanes_api.tests
             var respuesta = response as StatusCodeResult;
             Assert.AreEqual(204,respuesta.StatusCode);
 
+
+        }
+
+        [TestMethod]
+        public async Task postearUnVolcanConImagen()
+        {
+            //Preparacion
+            var nombreDB = Guid.NewGuid().ToString();
+            var archivoPrueba = obtenerArchivoDePrueba();
+            var volcan = new VolcanDTO()
+            {
+                
+                Nombre = "volcan",
+                Descripcion = "descripcion",
+                Altura = 5000,
+                Ecosistema = "bosque",
+                Ubicacion = "Guatemala",
+                Imagen = archivoPrueba
+
+            };
+
+            //Prueba
+            var contextoPrueba = ConstruirContexto(nombreDB);
+            var logger = new MockILogger<VolcanesController>();
+            var spaceService = new MockSpacesDigitalOceanService();
+            var controller = new VolcanesController(contextoPrueba,logger,spaceService);
+
+            //Verificacion
+            var response = controller.post(volcan);
+
+            var respuesta = response.Result as StatusCodeResult;
+            Assert.AreEqual(204,respuesta.StatusCode);
+
+        }
+
+        private IFormFile obtenerArchivoDePrueba()
+        {
+            byte[] contenido = System.Text.Encoding.UTF8.GetBytes("Este es un archivo en memoria");
+            byte[] archivoEnBytes;
+            FormFile respuesta;
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                memoryStream.Write(contenido, 0, contenido.Length);
+                //archivoEnBytes = memoryStream.ToArray();
+                respuesta = new FormFile(memoryStream,0,memoryStream.Length,"application/octet-stream","archivo.txt");
+            }
+
+            return respuesta;
 
         }
 
