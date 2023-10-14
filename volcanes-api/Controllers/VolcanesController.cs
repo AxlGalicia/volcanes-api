@@ -62,19 +62,28 @@ namespace volcanes_api.Controllers
                 Ubicacion = volcan.Ubicacion
             };
 
-            var response = await _spaceService.UploadFileAsync(volcan.Imagen);
-            if (response)
+            if (volcan.Imagen != null)
             {
-                InformationMessage("Se guardo correctamente la imagen.");
-                volcanDB.Imagen = volcan.Imagen.FileName;
-                //return Ok();
+                var response = await _spaceService.UploadFileAsync(volcan.Imagen);
+                if (response)
+                {
+                    InformationMessage("Se guardo correctamente la imagen.");
+                    volcanDB.Imagen = volcan.Imagen.FileName;
+                    //return Ok();
+                }
+                else
+                {
+                    WarningMessage("Hubo un problema al subir la imagen.");
+                    volcanDB.Imagen = "";
+                    //return Conflict();
+                }
             }
-            else
+            else 
             {
-                WarningMessage("Hubo un problema al subir la imagen.");
+                InformationMessage("No se envio una imagen para el registro");
                 volcanDB.Imagen = "";
-                //return Conflict();
             }
+
 
             _context.Volcans.Add(volcanDB);
             await _context.SaveChangesAsync();
