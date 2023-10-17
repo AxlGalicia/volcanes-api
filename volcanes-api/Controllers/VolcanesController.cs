@@ -91,6 +91,25 @@ namespace volcanes_api.Controllers
             return NoContent();
         }
 
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> put([FromBody]Volcan volcan,int id)
+        {
+            InformationMessage("Se ejecuto solicitud PUT");
+
+            if (volcan.Id != id)
+                return BadRequest("Los IDs no coinciden");
+
+            var existe = await _context.Volcans.AnyAsync(x => x.Id == volcan.Id);
+
+            if (!existe)
+                return NotFound("El objeto no se encontro");
+
+            _context.Entry(volcan).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         private void InformationMessage(string message)
         {
             _logger.LogInformation(message);

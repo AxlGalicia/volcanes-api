@@ -107,7 +107,7 @@ namespace volcanes_api.tests
         }
 
         [TestMethod]
-        public async Task postearUnVolcan()
+        public async Task postearUnVolcanSinImagen()
         {
             //Preparacion
             var nombreDB = Guid.NewGuid().ToString();
@@ -169,6 +169,56 @@ namespace volcanes_api.tests
             var respuesta = response.Result as StatusCodeResult;
             Assert.AreEqual(204,respuesta.StatusCode);
 
+        }
+
+        [TestMethod]
+        public async Task actualizarUnVolcan()
+        {
+            var nombreDB = Guid.NewGuid().ToString();
+            var contextoConfig = ConstruirContexto(nombreDB);
+            var volcanDB = new Volcan()
+            {
+                Nombre = "volcan",
+                Descripcion = "descripcion volcan",
+                Ecosistema = "Bosque",
+                Altura = 5000,
+                Ubicacion = "Guatemala",
+                Imagen = "Imagen.png"
+            };
+
+            contextoConfig.Volcans.Add(volcanDB);
+            await contextoConfig.SaveChangesAsync();
+
+            var volcanActualizado = new Volcan()
+            {
+                Id = 1,
+                Nombre = "volcan (ACTUALIZADO)",
+                Descripcion = "descripcion volcan",
+                Ecosistema = "Bosque",
+                Altura = 5000,
+                Ubicacion = "Guatemala",
+                Imagen = "Imagen.png"
+            };
+
+            var contextoPrueba = ConstruirContexto(nombreDB);
+            var logger = new MockILogger<VolcanesController>();
+            var spaceService = new MockSpacesDigitalOceanService();
+            var id = 1;
+
+            var controller = new VolcanesController(contextoPrueba,
+                                                    logger,
+                                                    spaceService);
+            var response = await controller.put(volcanActualizado, id);
+
+            var respuesta = response as StatusCodeResult;
+
+            Assert.AreEqual(204,respuesta.StatusCode);
+
+            var responseBadRequest = await controller.put(volcanActualizado, 10);
+
+            var respuestaBadRequest = responseBadRequest as BadRequestObjectResult;
+
+            Assert.AreEqual(400,respuestaBadRequest.StatusCode);
         }
 
         private IFormFile obtenerArchivoDePrueba()
