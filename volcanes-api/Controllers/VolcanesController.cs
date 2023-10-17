@@ -49,7 +49,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> post([FromForm]VolcanDTO volcan)
+        public async Task<ActionResult> post([FromForm] VolcanDTO volcan)
         {
             InformationMessage("Se ejecuto solicitud Post");
 
@@ -78,7 +78,7 @@ namespace volcanes_api.Controllers
                     //return Conflict();
                 }
             }
-            else 
+            else
             {
                 InformationMessage("No se envio una imagen para el registro");
                 volcanDB.Imagen = "";
@@ -92,7 +92,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> put([FromBody]Volcan volcan,int id)
+        public async Task<ActionResult> put([FromBody] Volcan volcan, int id)
         {
             InformationMessage("Se ejecuto solicitud PUT");
 
@@ -107,6 +107,19 @@ namespace volcanes_api.Controllers
             _context.Entry(volcan).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> delete(int id)
+        {
+            var volcan = await _context.Volcans.FindAsync(id);
+
+            if (volcan == null)
+                return NotFound();
+
+            _context.Volcans.Remove(volcan);
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 

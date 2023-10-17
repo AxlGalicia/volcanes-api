@@ -221,6 +221,46 @@ namespace volcanes_api.tests
             Assert.AreEqual(400,respuestaBadRequest.StatusCode);
         }
 
+        [TestMethod]
+        public async Task eliminarUnVolcan()
+        {
+            var nombreDB = Guid.NewGuid().ToString();
+            var contextoConfig = ConstruirContexto(nombreDB);
+            var volcanDB = new Volcan()
+            {
+                Nombre = "volcan",
+                Descripcion = "descripcion volcan",
+                Ecosistema = "Bosque",
+                Altura = 5000,
+                Ubicacion = "Guatemala",
+                Imagen = "Imagen.png"
+            };
+
+            contextoConfig.Volcans.Add(volcanDB);
+            await contextoConfig.SaveChangesAsync();
+
+            var contextoPrueba = ConstruirContexto(nombreDB);
+            var logger = new MockILogger<VolcanesController>();
+            var spaceService = new MockSpacesDigitalOceanService();
+            var id = 1;
+
+            var controller = new VolcanesController(contextoPrueba,
+                                                    logger,
+                                                    spaceService);
+
+            var response = await controller.delete(id);
+
+            var respuesta = response as StatusCodeResult;
+
+            Assert.AreEqual(204, respuesta.StatusCode);
+
+            var responseNotFound = await controller.delete(10);
+
+            var respuestaNotFound = responseNotFound as StatusCodeResult;
+
+            Assert.AreEqual(404, respuestaNotFound.StatusCode);
+        }
+
         private IFormFile obtenerArchivoDePrueba()
         {
             byte[] contenido = System.Text.Encoding.UTF8.GetBytes("Este es un archivo en memoria");
