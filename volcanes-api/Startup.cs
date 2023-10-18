@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using volcanes_api.Interfaces;
 using volcanes_api.Models;
 using volcanes_api.Services;
@@ -17,7 +18,24 @@ namespace volcanes_api
         public void ConfigureServices(IServiceCollection services) 
         {
             services.AddControllers();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options => {
+                options.SwaggerDoc("v1",new OpenApiInfo { 
+                    Version = "v1.0.0",
+                    Title = "Volcanes de Guatemala",
+                    Description = "Esta API nos devuelve los volcanes de Guatemala con su descripcion, altura, ecosistema e imagen.",
+                    Contact = new OpenApiContact { 
+                        Name = "Contactar con el creador Axl Galicia",
+                        Email = "axlgreatga@gmail.com",
+                        Url = new Uri("https://github.com/AxlGalicia")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Link del Repositorio",
+                        Url = new Uri("https://github.com/AxlGalicia/volcanes-api")
+                    }
+
+                });
+            });
             services.AddDbContext<volcanesDBContext>(options =>
             {
                 options.UseSqlServer(Configuration["ConnectionStrings"]);
