@@ -1,11 +1,11 @@
 ﻿namespace volcanes_api.Models.DTOs
 {
-    public class VolcanDTO
+    public class VolcanCreacionDTO
     {
         public string Nombre { get; set; }
 
         public string Descripcion { get; set; }
-        public float Altura { get; set; }
+        public double Altura { get; set; }
         public string Ubicacion { get; set; }
 
         public string Ecosistema { get; set; }

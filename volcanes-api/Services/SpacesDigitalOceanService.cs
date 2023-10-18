@@ -1,5 +1,7 @@
 ﻿using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using System.Net;
 using volcanes_api.Interfaces;
 
 namespace volcanes_api.Services
@@ -56,16 +58,96 @@ namespace volcanes_api.Services
                 return false;
             }
         }
-        public Task<bool> DeleteFileAsync(string fileName, string versionId = "")
+        public async Task<bool> DeleteFileAsync(string fileName, string versionId = "")
         {
-            throw new NotImplementedException();
+            DeleteObjectRequest request = new DeleteObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = fileName
+            };
+
+            if (!string.IsNullOrEmpty(versionId))
+                request.VersionId = versionId;
+
+            if (!IsFileExists(fileName, versionId).Result)
+            {
+                return false;
+            }
+            await _S3Client.DeleteObjectAsync(request);
+            return true;
         }
 
-        public Task<byte[]> DownloadFileAsync(string file)
+        public async Task<byte[]> DownloadFileAsync(string file)
         {
-            throw new NotImplementedException();
+            MemoryStream ms = null;
+
+            try
+            {
+                GetObjectRequest getObjectRequest = new GetObjectRequest
+                {
+                    BucketName = _bucketName,
+                    Key = file
+                };
+
+                using (var response = await _S3Client.GetObjectAsync(getObjectRequest))
+                {
+                    if (response.HttpStatusCode == HttpStatusCode.OK)
+                    {
+                        using (ms = new MemoryStream())
+                        {
+                            await response.ResponseStream.CopyToAsync(ms);
+                        }
+                    }
+                }
+
+                    if (ms is null || ms.ToArray().Length < 1)
+                    {
+                        _logger.LogError(string.Format("The document '{0}' is not found", file));
+                        return null;
+                    }
+
+                    //throw new FileNotFoundException(string.Format("The document '{0}' is not found", file));
+
+                return ms.ToArray();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Ocurrio un error en el proceso: ", e.Message);
+                return null;
+                //throw;
+            }
+            
         }
 
+        public async Task<bool> IsFileExists(string fileName, string versionId)
+        {
+            try
+            {
+                GetObjectMetadataRequest request = new GetObjectMetadataRequest()
+                {
+                    BucketName = _bucketName,
+                    Key = fileName,
+                    VersionId = !string.IsNullOrEmpty(versionId) ? versionId : null
+                };
+
+                var response = await _S3Client.GetObjectMetadataAsync(request);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                if (ex.InnerException != null && ex.InnerException is AmazonS3Exception awsEx)
+                {
+                    if (string.Equals(awsEx.ErrorCode, "NoSuchBucket"))
+                        return false;
+
+                    else if (string.Equals(awsEx.ErrorCode, "NotFound"))
+                        return false;
+                }
+
+                return false;
+            }
+        }
 
     }
 }

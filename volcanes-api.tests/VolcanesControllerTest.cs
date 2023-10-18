@@ -120,7 +120,7 @@ namespace volcanes_api.tests
                                                     logger,
                                                     spaceService);
 
-            var volcan = new VolcanDTO()
+            var volcan = new VolcanCreacionDTO()
             {
                 Nombre = "volcan prueba",
                 Descripcion = "Descripcion del volcan.",
@@ -145,7 +145,7 @@ namespace volcanes_api.tests
             //Preparacion
             var nombreDB = Guid.NewGuid().ToString();
             var archivoPrueba = obtenerArchivoDePrueba();
-            var volcan = new VolcanDTO()
+            var volcan = new VolcanCreacionDTO()
             {
                 
                 Nombre = "volcan",

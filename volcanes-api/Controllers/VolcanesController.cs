@@ -5,6 +5,7 @@ using Amazon.S3.Transfer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Net.Mail;
 using volcanes_api.Interfaces;
 using volcanes_api.Models;
 using volcanes_api.Models.DTOs;
@@ -45,11 +46,26 @@ namespace volcanes_api.Controllers
             var volcan = await _context.Volcans.FirstOrDefaultAsync(x => x.Id == id);
             if (volcan == null)
                 return NotFound();
+
             return volcan;
         }
 
+        [HttpGet("imagen/{id:int}")]
+        public async Task<ActionResult> getImage(int id)
+        {
+            InformationMessage("Se ejecuto solicitud GET by id Imagen");
+
+            var volcan = await _context.Volcans.FindAsync(id);
+            if (volcan == null)
+                return NotFound("El registro del volcan no existe");
+
+            var response = await _spaceService.DownloadFileAsync(volcan.Imagen);
+
+            return File(response,"application/octet-stream",volcan.Imagen);
+        }
+
         [HttpPost]
-        public async Task<ActionResult> post([FromForm] VolcanDTO volcan)
+        public async Task<ActionResult> post([FromForm] VolcanCreacionDTO volcan)
         {
             InformationMessage("Se ejecuto solicitud Post");
 
@@ -69,13 +85,11 @@ namespace volcanes_api.Controllers
                 {
                     InformationMessage("Se guardo correctamente la imagen.");
                     volcanDB.Imagen = volcan.Imagen.FileName;
-                    //return Ok();
                 }
                 else
                 {
                     WarningMessage("Hubo un problema al subir la imagen.");
                     volcanDB.Imagen = "";
-                    //return Conflict();
                 }
             }
             else
@@ -117,6 +131,8 @@ namespace volcanes_api.Controllers
 
             if (volcan == null)
                 return NotFound();
+
+            await _spaceService.DeleteFileAsync(volcan.Imagen);
 
             _context.Volcans.Remove(volcan);
             await _context.SaveChangesAsync();
