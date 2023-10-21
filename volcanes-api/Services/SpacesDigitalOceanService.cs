@@ -3,6 +3,7 @@ using Amazon.S3.Model;
 using Amazon.S3.Transfer;
 using System.Net;
 using volcanes_api.Interfaces;
+using volcanes_api.Models.DTOs;
 
 namespace volcanes_api.Services
 {
@@ -77,9 +78,12 @@ namespace volcanes_api.Services
             return true;
         }
 
-        public async Task<byte[]> DownloadFileAsync(string file)
+        public async Task<ArchivoDescargadoDTO> DownloadFileAsync(string file)
         {
+            var archivoDescargadoDto = new ArchivoDescargadoDTO();
+            var tipoContenido = "";
             MemoryStream ms = null;
+            //MemoryStream stream = new MemoryStream();
 
             try
             {
@@ -96,6 +100,9 @@ namespace volcanes_api.Services
                         using (ms = new MemoryStream())
                         {
                             await response.ResponseStream.CopyToAsync(ms);
+                            //await ms.CopyToAsync(stream);
+                            archivoDescargadoDto.tipoContenido = response.Headers.ContentType;
+
                         }
                     }
                 }
@@ -105,10 +112,19 @@ namespace volcanes_api.Services
                         _logger.LogError(string.Format("The document '{0}' is not found", file));
                         return null;
                     }
-
+                    
                     //throw new FileNotFoundException(string.Format("The document '{0}' is not found", file));
-
-                return ms.ToArray();
+                // MemoryStream stream = new MemoryStream();
+                // stream.Write(ms.ToArray());
+                //
+                // var archivo = new FormFile(stream,0,stream.Length,"Imagen",file)
+                // {
+                //     Headers = new HeaderDictionary(),
+                //     ContentType = tipoContenido
+                // };
+                //archivo.ContentType = tipoContenido;
+                archivoDescargadoDto.contenido = ms.ToArray();
+                return archivoDescargadoDto;
             }
             catch (Exception e)
             {

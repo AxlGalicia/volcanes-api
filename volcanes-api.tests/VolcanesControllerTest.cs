@@ -107,6 +107,42 @@ namespace volcanes_api.tests
         }
 
         [TestMethod]
+        public async Task obtenerImagen()
+        {
+            //Preparacion
+            var nombreDB = Guid.NewGuid().ToString();
+            var contextoConfig = ConstruirContexto(nombreDB);
+            var volcan = new Volcan()
+            {
+                Nombre = "volcan 1",
+                Descripcion = "Descripcion volcan 1",
+                Altura = 3233,
+                Ecosistema = "Zona con bosque",
+                Ubicacion = "Departamento de Guatemala",
+                Imagen = "volcan.png"
+            };
+            contextoConfig.Volcans.Add(volcan);
+            await contextoConfig.SaveChangesAsync();
+
+            var contextoPrueba = ConstruirContexto(nombreDB);
+            var logger = new MockILogger<VolcanesController>();
+            var spaceService = new MockSpacesDigitalOceanService();
+            
+            var controller = new VolcanesController(contextoPrueba,
+                                                    logger,
+                                                    spaceService);
+            
+            //Prueba
+            var id = 1;
+            var response = await controller.getImage(id);
+            var respuesta = response as FileContentResult;
+
+            Assert.IsTrue(respuesta.FileContents.Length>1);
+
+
+        }
+
+        [TestMethod]
         public async Task postearUnVolcanSinImagen()
         {
             //Preparacion
@@ -189,15 +225,14 @@ namespace volcanes_api.tests
             contextoConfig.Volcans.Add(volcanDB);
             await contextoConfig.SaveChangesAsync();
 
-            var volcanActualizado = new Volcan()
+            var volcanActualizado = new VolcanActualizarDTO()
             {
                 Id = 1,
                 Nombre = "volcan (ACTUALIZADO)",
                 Descripcion = "descripcion volcan",
                 Ecosistema = "Bosque",
                 Altura = 5000,
-                Ubicacion = "Guatemala",
-                Imagen = "Imagen.png"
+                Ubicacion = "Guatemala"
             };
 
             var contextoPrueba = ConstruirContexto(nombreDB);
@@ -269,8 +304,8 @@ namespace volcanes_api.tests
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 memoryStream.Write(contenido, 0, contenido.Length);
-                //archivoEnBytes = memoryStream.ToArray();
-                respuesta = new FormFile(memoryStream,0,memoryStream.Length,"application/octet-stream","archivo.txt");
+              
+                respuesta = new FormFile(memoryStream,0,memoryStream.Length,"image/png","archivo.png");
             }
 
             return respuesta;

@@ -1,9 +1,11 @@
-﻿namespace volcanes_api.Interfaces
+﻿using volcanes_api.Models.DTOs;
+
+namespace volcanes_api.Interfaces
 {
     public interface ISpacesDigitalOceanService
     {
 
-        Task<byte[]> DownloadFileAsync(string file);
+        Task<ArchivoDescargadoDTO> DownloadFileAsync(string file);
 
         Task<bool> UploadFileAsync(IFormFile file);
 

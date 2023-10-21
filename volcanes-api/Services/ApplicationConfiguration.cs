@@ -21,6 +21,14 @@ namespace volcanes_api.Services
             Region = configuration["Region"];
             ServiceURL = configuration["ServiceURL"];
             SignatureVersion = configuration["SignatureVersion"];
+            
+            // AccessKey = Environment.GetEnvironmentVariable("AccessKey");
+            // SecretAccessKey = Environment.GetEnvironmentVariable("SecretAccessKey");
+            // SessionToken = Environment.GetEnvironmentVariable("SessionToken");
+            // BucketName = Environment.GetEnvironmentVariable("BucketName");
+            // Region = Environment.GetEnvironmentVariable("Region");
+            // ServiceURL = Environment.GetEnvironmentVariable("ServiceURL");
+            // SignatureVersion = Environment.GetEnvironmentVariable("SignatureVersion");
         }
     }
 }

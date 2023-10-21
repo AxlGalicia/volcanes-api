@@ -61,7 +61,16 @@ namespace volcanes_api.Controllers
 
             var response = await _spaceService.DownloadFileAsync(volcan.Imagen);
 
-            return File(response,"application/octet-stream",volcan.Imagen);
+            if (response == null)
+                return NotFound("No se encontro registro de la imagen guardada");
+            // MemoryStream ms = new MemoryStream();
+            // response.CopyTo(ms);
+            // return File(ms.ToArray(),response.ContentType);
+
+            return File(response.contenido,response.tipoContenido);
+
+            //return Content(response);
+            //return File(response.contenidoFile,response.tipoContenido,volcan.Imagen);
         }
 
         [HttpPost]
@@ -80,6 +89,9 @@ namespace volcanes_api.Controllers
 
             if (volcan.Imagen != null)
             {
+                if (!validateFile(volcan.Imagen))
+                    return BadRequest("Tiene que ser una imagen con alguna de las siguientes extensiones(.png, .jpg, .jpeg, .gif)");
+                
                 var response = await _spaceService.UploadFileAsync(volcan.Imagen);
                 if (response)
                 {
@@ -106,19 +118,25 @@ namespace volcanes_api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult> put([FromBody] Volcan volcan, int id)
+        public async Task<ActionResult> put([FromBody] VolcanActualizarDTO volcanActualizarDto, int id)
         {
             InformationMessage("Se ejecuto solicitud PUT");
 
-            if (volcan.Id != id)
+            if (volcanActualizarDto.Id != id)
                 return BadRequest("Los IDs no coinciden");
 
-            var existe = await _context.Volcans.AnyAsync(x => x.Id == volcan.Id);
+            var volcanDB = await _context.Volcans.FindAsync(volcanActualizarDto.Id);
 
-            if (!existe)
+            if (volcanDB == null)
                 return NotFound("El objeto no se encontro");
 
-            _context.Entry(volcan).State = EntityState.Modified;
+            volcanDB.Id = volcanActualizarDto.Id;
+            volcanDB.Nombre = volcanActualizarDto.Nombre;
+            volcanDB.Descripcion = volcanActualizarDto.Descripcion;
+            volcanDB.Altura = volcanActualizarDto.Altura;
+            volcanDB.Ubicacion = volcanActualizarDto.Ubicacion;
+            volcanDB.Ecosistema = volcanActualizarDto.Ecosistema;
+
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -147,6 +165,24 @@ namespace volcanes_api.Controllers
         private void WarningMessage(string message)
         { 
             _logger.LogWarning(message);
+        }
+
+        private bool validateFile(IFormFile file)
+        {
+            var extensionesPermitidas = new string[]
+            {
+                ".png",
+                ".jpg",
+                ".jpeg",
+                ".gif"
+            };
+
+            var extensionFile = Path.GetExtension(file.FileName).ToLower();
+
+            if (!extensionesPermitidas.Contains(extensionFile))
+                return false;
+
+            return true;
         }
     }
 }   
