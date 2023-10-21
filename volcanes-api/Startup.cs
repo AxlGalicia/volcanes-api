@@ -39,11 +39,11 @@ namespace volcanes_api
             services.AddDbContext<volcanesDBContext>(options =>
             {
                 //Necesario para utilizar Docker
-                //string conexion = Environment.GetEnvironmentVariable("ConnectionString");
-                //options.UseMySql(conexion,ServerVersion.AutoDetect(conexion));
+                string conexion = Environment.GetEnvironmentVariable("ConnectionString");
+                options.UseMySql(conexion,ServerVersion.AutoDetect(conexion));
                 
                 //Variedad de opciones para utilizar Mysql o SqlServer
-                options.UseMySql(Configuration["ConnectionStrings"],ServerVersion.AutoDetect(Configuration["ConnectionStrings"]));
+                //options.UseMySql(Configuration["ConnectionStrings"],ServerVersion.AutoDetect(Configuration["ConnectionStrings"]));
                 //options.UseSqlServer(Configuration["ConnectionStrings"]);
             });
             services.AddLogging();
@@ -67,7 +67,7 @@ namespace volcanes_api
 
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
 
