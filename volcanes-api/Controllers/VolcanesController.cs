@@ -98,10 +98,11 @@ namespace volcanes_api.Controllers
                     return BadRequest("Tiene que ser una imagen con alguna de las siguientes extensiones(.png, .jpg, .jpeg, .gif)");
                 
                 var response = await _spaceService.UploadFileAsync(volcan.Imagen);
-                if (response)
+                if (response.responseStatus)
                 {
                     InformationMessage("Se guardo correctamente la imagen.");
-                    volcanDB.Imagen = volcan.Imagen.FileName;
+                    //volcanDB.Imagen = volcan.Imagen.FileName;
+                    volcanDB.Imagen = response.newName;
                 }
                 else
                 {

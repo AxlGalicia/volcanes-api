@@ -29,18 +29,18 @@ namespace volcanes_api.Services
                                            _S3Config);
             _logger = logger;
         }
-        public async Task<bool> UploadFileAsync(IFormFile file)
+        public async Task<ResponseUpload> UploadFileAsync(IFormFile file)
         {
             try
             {
                 using (var newMemoryStream = new MemoryStream())
                 {
                     file.CopyTo(newMemoryStream);
-
+                    var newName = changeFileName(file);
                     var uploadRequest = new TransferUtilityUploadRequest
                     {
                         InputStream = newMemoryStream,
-                        Key = file.FileName,
+                        Key = newName,
                         BucketName = _bucketName,
                         ContentType = file.ContentType
                     };
@@ -49,14 +49,14 @@ namespace volcanes_api.Services
 
                     await fileTransferUtility.UploadAsync(uploadRequest);
 
-                    return true;
+                    return new ResponseUpload(){responseStatus = true,newName = newName};
                 }
             }
             catch (Exception e)
             {
                 _logger.LogError("Ocurrio un error al intentar cargar archivo: ", e.Message);
                 //Console.WriteLine("Ocurrio un error: ", e.Message);
-                return false;
+                return new ResponseUpload(){responseStatus = false,newName = ""};
             }
         }
         public async Task<bool> DeleteFileAsync(string fileName, string versionId = "")
@@ -163,6 +163,13 @@ namespace volcanes_api.Services
 
                 return false;
             }
+        }
+
+        private string changeFileName(IFormFile file)
+        {
+            var extension = Path.GetExtension(file.FileName).ToLower();
+            var newName = Guid.NewGuid().ToString()+extension;
+            return newName;
         }
 
     }

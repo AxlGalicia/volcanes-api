@@ -1,0 +1,16 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace volcanes_api.Models
+{
+    public partial class VolcanUsuario
+    {
+        public int Id { get; set; }
+        public string? Nombre { get; set; }
+        public string? Descripcion { get; set; }
+        public float? Altura { get; set; }
+        public string? Ubicacion { get; set; }
+        public string? Ecosistema { get; set; }
+        public string? Imagen { get; set; }
+    }
+}

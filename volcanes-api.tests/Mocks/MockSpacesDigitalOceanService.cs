@@ -26,9 +26,9 @@ namespace volcanes_api.tests.Mocks
             return Task.FromResult(archivo);
         }
 
-        public Task<bool> UploadFileAsync(IFormFile file)
+        public Task<ResponseUpload> UploadFileAsync(IFormFile file)
         {
-            return Task.FromResult(true);
+            return Task.FromResult(new ResponseUpload(){responseStatus = true,newName = Guid.NewGuid().ToString()});
         }
         
         private IFormFile obtenerArchivoDePrueba()
