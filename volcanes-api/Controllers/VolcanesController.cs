@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using volcanes_api.Interfaces;
 using volcanes_api.Models;
 using volcanes_api.Models.DTOs;
+using volcanes_api.Utilidades;
 
 namespace volcanes_api.Controllers
 {
@@ -32,11 +33,18 @@ namespace volcanes_api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,User")]
-        public async Task<List<Volcan>> get()
+        public async Task<List<Volcan>> get([FromQuery] PaginacionDTO paginacionDto)
         {
             InformationMessage("Se ejecuto solicitud GET");
-
-            var volcanes = await _context.Volcans.ToListAsync();
+            
+            var queryable = _context.Volcans.AsQueryable();
+            
+            await HttpContext.InsertarParametros(queryable);
+            
+            var volcanes = await queryable
+                            .paginar(paginacionDto)
+                            .ToListAsync();
+            
             return volcanes;
         }
 
