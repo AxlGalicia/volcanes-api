@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Net.Mail;
+using Microsoft.AspNetCore.Authorization;
 using volcanes_api.Interfaces;
 using volcanes_api.Models;
 using volcanes_api.Models.DTOs;
@@ -30,6 +31,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin,User")]
         public async Task<List<Volcan>> get()
         {
             InformationMessage("Se ejecuto solicitud GET");
@@ -39,6 +41,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<Volcan>> getId(int id)
         {
             InformationMessage("Se ejecuto solicitud GET by Id");
@@ -51,6 +54,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpGet("imagen/{id:int}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> getImage(int id)
         {
             InformationMessage("Se ejecuto solicitud GET by id Imagen");
@@ -74,6 +78,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> post([FromForm] VolcanCreacionDTO volcan)
         {
             InformationMessage("Se ejecuto solicitud Post");
@@ -118,6 +123,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> put([FromBody] VolcanActualizarDTO volcanActualizarDto, int id)
         {
             InformationMessage("Se ejecuto solicitud PUT");
@@ -143,6 +149,7 @@ namespace volcanes_api.Controllers
         }
 
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> delete(int id)
         {
             var volcan = await _context.Volcans.FindAsync(id);

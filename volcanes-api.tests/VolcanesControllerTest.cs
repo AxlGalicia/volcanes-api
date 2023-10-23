@@ -68,7 +68,7 @@ namespace volcanes_api.tests
                 Id = 1,
                 Nombre = "volcan-1",
                 Descripcion = "Descripcion del volcan",
-                Altura = 4000.5,
+                Altura = 4000.5F,
                 Ecosistema = "Ambien seco",
                 Ubicacion = "Guatemala",
                 Imagen = "imagen-1"
