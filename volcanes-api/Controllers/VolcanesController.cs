@@ -21,14 +21,17 @@ namespace volcanes_api.Controllers
         private readonly volcanesDBContext _context;
         private readonly ILogger<VolcanesController> _logger;
         private readonly ISpacesDigitalOceanService _spaceService;
+        private readonly IHeaderService _headerService;
 
         public VolcanesController(volcanesDBContext context,
                                   ILogger<VolcanesController> logger,
-                                  ISpacesDigitalOceanService spaceService)
+                                  ISpacesDigitalOceanService spaceService,
+                                  IHeaderService headerService)
         {
             _context = context;
             _logger = logger;
             _spaceService = spaceService;
+            _headerService = headerService;
         }
 
         [HttpGet]
@@ -39,7 +42,8 @@ namespace volcanes_api.Controllers
             
             var queryable = _context.Volcans.AsQueryable();
             
-            await HttpContext.InsertarParametros(queryable);
+            //await HttpContext.InsertarParametros(queryable);
+            await _headerService.InsertarParametros(HttpContext, queryable);
             
             var volcanes = await queryable
                             .paginar(paginacionDto)

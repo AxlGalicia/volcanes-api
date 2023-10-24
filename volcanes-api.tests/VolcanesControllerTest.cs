@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Microsoft.AspNetCore.Session;
 using volcanes_api.Controllers;
 using volcanes_api.Models;
 using volcanes_api.Models.DTOs;
@@ -48,10 +49,19 @@ namespace volcanes_api.tests
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
             var spaceService = new MockSpacesDigitalOceanService();
+            var headerService = new MockHeaderService();
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
-            var response = await controller.get();
+                                                    spaceService,
+                                                    headerService);
+
+            var paginacion = new PaginacionDTO()
+            {
+                Pagina = 1,
+                RegistrosPorPagina = 10
+            };
+                
+            var response = await controller.get(paginacionDto:paginacion);
 
             //Verificacion
             Assert.AreEqual(2,response.Count());
@@ -79,9 +89,11 @@ namespace volcanes_api.tests
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
             var spaceService = new MockSpacesDigitalOceanService();
+            var headerService = new MockHeaderService();
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
+                                                    spaceService,
+                                                    headerService);
             var response = await controller.getId(1);
 
             //Verificacion
@@ -98,9 +110,11 @@ namespace volcanes_api.tests
 
             //Prueba
             var spaceService = new MockSpacesDigitalOceanService();
+            var headerService = new MockHeaderService();
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
+                                                    spaceService,
+                                                    headerService);
             var respuesta = await controller.getId(1);
             var resultado = respuesta.Result as StatusCodeResult;
             Assert.AreEqual(404,resultado.StatusCode);
@@ -126,11 +140,13 @@ namespace volcanes_api.tests
 
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
+            var headerService = new MockHeaderService();
             var spaceService = new MockSpacesDigitalOceanService();
             
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
+                                                    spaceService,
+                                                    headerService);
             
             //Prueba
             var id = 1;
@@ -152,9 +168,11 @@ namespace volcanes_api.tests
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
             var spaceService = new MockSpacesDigitalOceanService();
+            var headerService = new MockHeaderService();
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
+                                                    spaceService,
+                                                    headerService);
 
             var volcan = new VolcanCreacionDTO()
             {
@@ -197,7 +215,8 @@ namespace volcanes_api.tests
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
             var spaceService = new MockSpacesDigitalOceanService();
-            var controller = new VolcanesController(contextoPrueba,logger,spaceService);
+            var headerService = new MockHeaderService();
+            var controller = new VolcanesController(contextoPrueba,logger,spaceService,headerService);
 
             //Verificacion
             var response = controller.post(volcan);
@@ -238,11 +257,13 @@ namespace volcanes_api.tests
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
             var spaceService = new MockSpacesDigitalOceanService();
+            var headerService = new MockHeaderService();
             var id = 1;
 
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
+                                                    spaceService,
+                                                    headerService);
             var response = await controller.put(volcanActualizado, id);
 
             var respuesta = response as StatusCodeResult;
@@ -277,11 +298,13 @@ namespace volcanes_api.tests
             var contextoPrueba = ConstruirContexto(nombreDB);
             var logger = new MockILogger<VolcanesController>();
             var spaceService = new MockSpacesDigitalOceanService();
+            var headerService = new MockHeaderService();
             var id = 1;
 
             var controller = new VolcanesController(contextoPrueba,
                                                     logger,
-                                                    spaceService);
+                                                    spaceService,
+                                                    headerService);
 
             var response = await controller.delete(id);
 

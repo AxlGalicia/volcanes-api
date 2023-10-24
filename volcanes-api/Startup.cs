@@ -52,6 +52,7 @@ namespace volcanes_api
             services.AddLogging();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<ISpacesDigitalOceanService,SpacesDigitalOceanService>();
+            services.AddSingleton<IHeaderService, HeaderService>();
             services.AddAuthorization();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
