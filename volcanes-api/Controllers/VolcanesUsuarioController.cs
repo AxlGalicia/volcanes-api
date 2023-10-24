@@ -15,16 +15,16 @@ using volcanes_api.Utilidades;
 namespace volcanes_api.Controllers
 {
     [ApiController]
-    [Route("api/volcanes")]
-    public class VolcanesController : ControllerBase
+    [Route("api/volcanes_usuario")]
+    public class VolcanesUsuarioController : ControllerBase
     {
         private readonly volcanesDBContext _context;
-        private readonly ILogger<VolcanesController> _logger;
+        private readonly ILogger<VolcanesUsuarioController> _logger;
         private readonly ISpacesDigitalOceanService _spaceService;
         private readonly IHeaderService _headerService;
 
-        public VolcanesController(volcanesDBContext context,
-                                  ILogger<VolcanesController> logger,
+        public VolcanesUsuarioController(volcanesDBContext context,
+                                  ILogger<VolcanesUsuarioController> logger,
                                   ISpacesDigitalOceanService spaceService,
                                   IHeaderService headerService)
         {
@@ -36,31 +36,31 @@ namespace volcanes_api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,User")]
-        public async Task<List<Volcan>> get([FromQuery] PaginacionDTO paginacionDto)
+        public async Task<List<VolcanUsuario>> get([FromQuery] PaginacionDTO paginacionDto)
         {
             InformationMessage("Se ejecuto solicitud GET");
-            
-            var queryable = _context.Volcans.AsQueryable();
-            
+
+            var queryable = _context.VolcanUsuarios.AsQueryable();
+
             //await HttpContext.InsertarParametros(queryable);
             await _headerService.InsertarParametros(HttpContext, queryable);
             
             var volcanes = await queryable
-                            .paginar(paginacionDto)
-                            .ToListAsync();
+                                            .paginar(paginacionDto)
+                                            .ToListAsync();
             
             return volcanes;
         }
 
         [HttpGet("{id:int}")]
         [Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<Volcan>> getId(int id)
+        public async Task<ActionResult<VolcanUsuario>> getId(int id)
         {
             InformationMessage("Se ejecuto solicitud GET by Id");
 
-            var volcan = await _context.Volcans.FirstOrDefaultAsync(x => x.Id == id);
+            var volcan = await _context.VolcanUsuarios.FirstOrDefaultAsync(x => x.Id == id);
             if (volcan == null)
-                return NotFound();
+                return NotFound("No se encontro el objeto");
 
             return volcan;
         }
@@ -71,7 +71,7 @@ namespace volcanes_api.Controllers
         {
             InformationMessage("Se ejecuto solicitud GET by id Imagen");
 
-            var volcan = await _context.Volcans.FindAsync(id);
+            var volcan = await _context.VolcanUsuarios.FindAsync(id);
             if (volcan == null)
                 return NotFound("El registro del volcan no existe");
 
@@ -90,12 +90,12 @@ namespace volcanes_api.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> post([FromForm] VolcanCreacionDTO volcan)
         {
             InformationMessage("Se ejecuto solicitud Post");
 
-            var volcanDB = new Volcan()
+            var volcanDB = new VolcanUsuario()
             {
                 Nombre = volcan.Nombre,
                 Descripcion = volcan.Descripcion,
@@ -129,14 +129,14 @@ namespace volcanes_api.Controllers
             }
 
 
-            _context.Volcans.Add(volcanDB);
+            _context.VolcanUsuarios.Add(volcanDB);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> put([FromBody] VolcanActualizarDTO volcanActualizarDto, int id)
         {
             InformationMessage("Se ejecuto solicitud PUT");
@@ -144,7 +144,7 @@ namespace volcanes_api.Controllers
             if (volcanActualizarDto.Id != id)
                 return BadRequest("Los IDs no coinciden");
 
-            var volcanDB = await _context.Volcans.FindAsync(volcanActualizarDto.Id);
+            var volcanDB = await _context.VolcanUsuarios.FindAsync(volcanActualizarDto.Id);
 
             if (volcanDB == null)
                 return NotFound("El objeto no se encontro");
@@ -162,17 +162,17 @@ namespace volcanes_api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> delete(int id)
         {
-            var volcan = await _context.Volcans.FindAsync(id);
+            var volcan = await _context.VolcanUsuarios.FindAsync(id);
 
             if (volcan == null)
-                return NotFound("No se encontro el objeto");
+                return NotFound("No se encontro registro del objeto");
 
             await _spaceService.DeleteFileAsync(volcan.Imagen);
 
-            _context.Volcans.Remove(volcan);
+            _context.VolcanUsuarios.Remove(volcan);
             await _context.SaveChangesAsync();
             return NoContent();
         }

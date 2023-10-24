@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace volcanes_api.Models
 {
-    public partial class Volcan
+    public partial class VolcanUsuario
     {
         public int Id { get; set; }
         public string? Nombre { get; set; }

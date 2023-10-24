@@ -14,7 +14,7 @@ namespace volcanes_api.Models.DTOs
         
         [Required(ErrorMessage = "El campo {0} es requerido.")]
         [Range(1,8848,ErrorMessage = "El campo {0} deberia de estar en 1 a 8848.")]
-        public double Altura { get; set; }
+        public float Altura { get; set; }
         
         [Required(ErrorMessage = "El campo {0} es requerido.")]
         [StringLength(maximumLength:255,ErrorMessage = "El campo {0} se excede de {1} caracteres.")]

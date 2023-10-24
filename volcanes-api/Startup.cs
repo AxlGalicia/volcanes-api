@@ -1,5 +1,8 @@
 ﻿
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using volcanes_api.Interfaces;
 using volcanes_api.Models;
@@ -49,6 +52,23 @@ namespace volcanes_api
             services.AddLogging();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<ISpacesDigitalOceanService,SpacesDigitalOceanService>();
+            services.AddSingleton<IHeaderService, HeaderService>();
+            services.AddAuthorization();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    //Esta variable no puede estar en desarrollo por seguridad
+                    var tokenKey = Encoding.UTF8.GetBytes(Configuration["JwtKey"]);
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+                        IssuerSigningKey = new SymmetricSecurityKey(tokenKey)
+                    };
+                });
 
             //services.AddCors(opciones => {
             //    opciones.AddDefaultPolicy(builder => {
@@ -73,6 +93,8 @@ namespace volcanes_api
 
             app.UseCors();
 
+            app.UseAuthentication();
+            
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => {

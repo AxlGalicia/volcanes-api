@@ -7,7 +7,7 @@ namespace volcanes_api.Interfaces
 
         Task<ArchivoDescargadoDTO> DownloadFileAsync(string file);
 
-        Task<bool> UploadFileAsync(IFormFile file);
+        Task<ResponseUpload> UploadFileAsync(IFormFile file);
 
         Task<bool> DeleteFileAsync(string fileName, string versionId = "");
 
