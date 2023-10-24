@@ -60,7 +60,7 @@ namespace volcanes_api.Controllers
 
             var volcan = await _context.VolcanUsuarios.FirstOrDefaultAsync(x => x.Id == id);
             if (volcan == null)
-                return NotFound();
+                return NotFound("No se encontro el objeto");
 
             return volcan;
         }
@@ -168,7 +168,7 @@ namespace volcanes_api.Controllers
             var volcan = await _context.VolcanUsuarios.FindAsync(id);
 
             if (volcan == null)
-                return NotFound();
+                return NotFound("No se encontro registro del objeto");
 
             await _spaceService.DeleteFileAsync(volcan.Imagen);
 

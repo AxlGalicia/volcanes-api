@@ -168,7 +168,7 @@ namespace volcanes_api.Controllers
             var volcan = await _context.Volcans.FindAsync(id);
 
             if (volcan == null)
-                return NotFound();
+                return NotFound("No se encontro el objeto");
 
             await _spaceService.DeleteFileAsync(volcan.Imagen);
 

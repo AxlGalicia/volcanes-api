@@ -42,6 +42,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "400": {
+            "description": "El campo username/password es obligatorio"
           }
         }
       }
@@ -73,6 +76,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "400": {
+            "description": "El campo username/password es obligatorio"
           }
         }
       }
@@ -207,6 +213,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "400":{
+            "description":"Tiene que ser una imagen con alguna de las siguientes extensiones(.png, .jpg, .jpeg, .gif)"
           }
         }
       }
@@ -247,6 +256,9 @@
                 }
               }
             }
+          },
+          "400":{
+            "description": "Not Found"
           }
         }
       },
@@ -285,8 +297,14 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No Content"
+          },
+          "400":{
+            "description": "Los IDs no coinciden"
+          },
+          "404":{
+            "description": "El objeto no se encontro"
           }
         }
       },
@@ -306,8 +324,11 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No content"
+          },
+          "404":{
+            "description": "No se encontro el objeto"
           }
         }
       }
@@ -331,6 +352,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "404":{
+            "description": "No se encontro el registro volcan"
           }
         }
       }
@@ -463,8 +487,11 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No content"
+          },
+          "400":{
+            "description": "Tiene que ser una imagen con alguna de las siguientes extensiones(.png, .jpg, .jpeg, .gif)"
           }
         }
       }
@@ -505,6 +532,9 @@
                 }
               }
             }
+          },
+          "404":{
+            "description":"No se encontro el objeto"
           }
         }
       },
@@ -543,8 +573,14 @@
           }
         },
         "responses": {
-          "200": {
-            "description": "Success"
+          "204": {
+            "description": "No Content"
+          },
+          "400":{
+            "description":"Los IDs no coinciden"
+          },
+          "404":{
+            "description": "El objeto no se encontro"
           }
         }
       },
@@ -564,8 +600,11 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Success"
+          },
+          "404": {
+            "description": "No se encontro registro del objeto"
           }
         }
       }
@@ -589,6 +628,9 @@
         "responses": {
           "200": {
             "description": "Success"
+          },
+          "404": {
+            "description": "El registro del volcan no existe"
           }
         }
       }

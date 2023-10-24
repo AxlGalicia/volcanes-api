@@ -1,0 +1,593 @@
+openapi: 3.0.1
+info:
+  title: Volcanes de Guatemala
+  description: >-
+    Esta API nos devuelve los volcanes de Guatemala con su descripcion, altura,
+    ecosistema e imagen.
+    En los endpoints api/volcanes puede obtener datos de los volcanes reales que hay en Guatemala. 
+    
+    
+    En los endpoints api/volcanes_usuario puede usted mismo probar la api creando,actualizando, obteniendo y eliminando sus propies volcanes que quiera crear de modo de prueba, para eso usar los endpoints api/auth/register y api/auth/login para poder obtener su Token. 
+    
+    
+    ADVERTENCIA: No ingresar datos reales en sus credenciales pueden ser datos ficticios solo para prueba, los datos ingresados no se comparten con terceros unicamente se guardan en la nube para luego eliminarlos.
+    
+    
+    FUENTE DE DATOS: Los datos se obtuvieron de una pagina de prensa libre todo el credito para ellos, los datos no se usan de manera comercial, unicamente de manera demostrativa.
+    
+    
+    https://www.prensalibre.com/guatemala/comunitario/cuantos-volcanes-hay-en-guatemala-cuales-son-sus-caracteristicas-y-ubicacion/
+  
+  contact:
+    name: Axl Galicia
+    url: https://github.com/AxlGalicia
+    email: axlgreatga@gmail.com
+  license:
+    name: Link del Repositorio
+    url: https://github.com/AxlGalicia/volcanes-api
+  version: v1.0.0
+paths:
+  /api/auth/register:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UsuarioDTO'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: El campo username/password es obligatorio
+  /api/auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UsuarioDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UsuarioDTO'
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: El campo username/password es obligatorio
+  /api/volcanes:
+    get:
+      tags:
+        - Volcanes
+      parameters:
+        - name: Pagina
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: RegistrosPorPagina
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Volcan'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Volcan'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Volcan'
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Volcanes
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - Altura
+                - Descripcion
+                - Ecosistema
+                - Nombre
+                - Ubicacion
+              type: object
+              properties:
+                Nombre:
+                  maxLength: 255
+                  minLength: 0
+                  type: string
+                  example: volcan nuevo
+                Descripcion:
+                  maxLength: 65535
+                  minLength: 0
+                  type: string
+                  example: descripcion volcan nuevo
+                Altura:
+                  maximum: 8848
+                  minimum: 1
+                  type: number
+                  format: float
+                Ubicacion:
+                  maxLength: 255
+                  minLength: 0
+                  type: string
+                  example: Departamento de San Marcos
+                Ecosistema:
+                  maxLength: 255
+                  minLength: 0
+                  type: string
+                  example: Bosques y rios
+                Imagen:
+                  type: string
+                  format: binary
+            encoding:
+              Nombre:
+                style: form
+              Descripcion:
+                style: form
+              Altura:
+                style: form
+              Ubicacion:
+                style: form
+              Ecosistema:
+                style: form
+              Imagen:
+                style: form
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: >-
+            Tiene que ser una imagen con alguna de las siguientes
+            extensiones(.png, .jpg, .jpeg, .gif)
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /api/volcanes/{id}:
+    get:
+      tags:
+        - Volcanes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/Volcan'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Volcan'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/Volcan'
+        '400':
+          description: Not Found
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Volcanes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VolcanActualizarDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VolcanActualizarDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/VolcanActualizarDTO'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Los IDs no coinciden
+        '404':
+          description: El objeto no se encontro
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Volcanes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: No content
+        '404':
+          description: No se encontro el objeto
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '403':
+          $ref: '#/components/responses/ForbiddenError'
+  /api/volcanes/imagen/{id}:
+    get:
+      tags:
+        - Volcanes
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: No se encontro el registro volcan
+  /api/volcanes_usuario:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - VolcanesUsuario
+      parameters:
+        - name: Pagina
+          in: query
+          schema:
+            type: integer
+            format: int32
+        - name: RegistrosPorPagina
+          in: query
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VolcanUsuario'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VolcanUsuario'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/VolcanUsuario'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - VolcanesUsuario
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - Altura
+                - Descripcion
+                - Ecosistema
+                - Nombre
+                - Ubicacion
+              type: object
+              properties:
+                Nombre:
+                  maxLength: 255
+                  minLength: 0
+                  type: string
+                Descripcion:
+                  maxLength: 65535
+                  minLength: 0
+                  type: string
+                Altura:
+                  maximum: 8848
+                  minimum: 1
+                  type: number
+                  format: float
+                Ubicacion:
+                  maxLength: 255
+                  minLength: 0
+                  type: string
+                Ecosistema:
+                  maxLength: 255
+                  minLength: 0
+                  type: string
+                Imagen:
+                  type: string
+                  format: binary
+            encoding:
+              Nombre:
+                style: form
+              Descripcion:
+                style: form
+              Altura:
+                style: form
+              Ubicacion:
+                style: form
+              Ecosistema:
+                style: form
+              Imagen:
+                style: form
+      responses:
+        '204':
+          description: No content
+        '400':
+          description: >-
+            Tiene que ser una imagen con alguna de las siguientes
+            extensiones(.png, .jpg, .jpeg, .gif)
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/volcanes_usuario/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - VolcanesUsuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/VolcanUsuario'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VolcanUsuario'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/VolcanUsuario'
+        '404':
+          description: No se encontro el objeto
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - VolcanesUsuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VolcanActualizarDTO'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/VolcanActualizarDTO'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/VolcanActualizarDTO'
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Los IDs no coinciden
+        '404':
+          description: El objeto no se encontro
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - VolcanesUsuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '204':
+          description: Success
+        '404':
+          description: No se encontro registro del objeto
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+  /api/volcanes_usuario/imagen/{id}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - VolcanesUsuario
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: El registro del volcan no existe
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+components:
+  responses:
+    UnauthorizedError:
+      description: Token invalido o se olvido de ponerlo
+    ForbiddenError:
+      description: No esta autorizado a usar este endpoint.
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    UsuarioDTO:
+      type: object
+      properties:
+        username:
+          type: string
+          example: Josh
+          nullable: false
+        password:
+          type: string
+          nullable: true
+          example: YKJ7yJrWdLKcIVH6
+      additionalProperties: false
+    Volcan:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 10
+        nombre:
+          type: string
+          nullable: true
+          example: volcan
+        descripcion:
+          type: string
+          nullable: true
+          example: descripcion del volcan
+        altura:
+          type: number
+          format: float
+          nullable: true
+          example: 4500
+        ubicacion:
+          type: string
+          nullable: true
+          example: Departamento de Guatemala
+        ecosistema:
+          type: string
+          nullable: true
+          example: Zona boscosa
+        imagen:
+          type: string
+          nullable: true
+          example: "volcan.png"
+      additionalProperties: false
+    VolcanActualizarDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 25
+        nombre:
+          type: string
+          nullable: true
+          example: volcan Actualizar
+        descripcion:
+          type: string
+          nullable: true
+          example: Descripcion del volcan actualizado
+        altura:
+          type: number
+          format: float
+          example: 2500
+        ubicacion:
+          type: string
+          nullable: true
+          example: Departamento de San Marcos
+        ecosistema:
+          type: string
+          nullable: true
+          example: Entre rios y vegetacion
+      additionalProperties: false
+    VolcanUsuario:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 5
+        nombre:
+          type: string
+          nullable: true
+          example: volcan prueba
+        descripcion:
+          type: string
+          nullable: true
+          example: Gran descripcion del volcan
+        altura:
+          type: number
+          format: float
+          nullable: true
+          example: 3500
+        ubicacion:
+          type: string
+          nullable: true
+          example: Departamento de Quiche
+        ecosistema:
+          type: string
+          nullable: true
+          example: Entre rios y bosques
+        imagen:
+          type: string
+          nullable: true
+          example: volcan.png
+      additionalProperties: false
+servers:
+  - url: https://miservidor.com
+    variables: {}
+    description: servidor de produccion
