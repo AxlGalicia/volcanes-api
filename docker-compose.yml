@@ -1,0 +1,11 @@
+﻿services:
+  volcanes-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: volcanes:1.1.1
+    container_name: volcanes-api
+    ports:
+      - 5000:80
+    env_file:
+      - .env

@@ -42,7 +42,7 @@ namespace volcanes_api
             services.AddDbContext<volcanesDBContext>(options =>
             {
                 //Necesario para utilizar Docker
-                string conexion = Environment.GetEnvironmentVariable("ConnectionString");
+                string conexion = Environment.GetEnvironmentVariable("ConnectionStrings");
                 options.UseMySql(conexion,ServerVersion.AutoDetect(conexion));
                 
                 //Variedad de opciones para utilizar Mysql o SqlServer
@@ -58,7 +58,8 @@ namespace volcanes_api
                 .AddJwtBearer(options =>
                 {
                     //Esta variable no puede estar en desarrollo por seguridad
-                    var tokenKey = Encoding.UTF8.GetBytes(Configuration["JwtKey"]);
+                    //var tokenKey = Encoding.UTF8.GetBytes(Configuration["JwtKey"]);
+                    var tokenKey = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JwtKey"));
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
                         ValidateIssuer = false,

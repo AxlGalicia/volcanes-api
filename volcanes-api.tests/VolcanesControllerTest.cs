@@ -314,7 +314,7 @@ namespace volcanes_api.tests
 
             var responseNotFound = await controller.delete(10);
 
-            var respuestaNotFound = responseNotFound as StatusCodeResult;
+            var respuestaNotFound = responseNotFound as NotFoundObjectResult;
 
             Assert.AreEqual(404, respuestaNotFound.StatusCode);
         }
