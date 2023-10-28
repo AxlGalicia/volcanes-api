@@ -49,7 +49,7 @@ public class AuthController: ControllerBase
         _context.Usuarios.Add(usuario);
         await _context.SaveChangesAsync();
 
-        return Ok(usuario);
+        return Ok("Usuario creado");
 
     }
 

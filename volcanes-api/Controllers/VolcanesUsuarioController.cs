@@ -36,7 +36,7 @@ namespace volcanes_api.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin,User")]
-        public async Task<List<VolcanUsuario>> get([FromQuery] PaginacionDTO paginacionDto)
+        public async Task<ActionResult<List<VolcanUsuario>>> get([FromQuery] PaginacionDTO paginacionDto)
         {
             InformationMessage("Se ejecuto solicitud GET");
 
@@ -48,6 +48,9 @@ namespace volcanes_api.Controllers
             var volcanes = await queryable
                                             .paginar(paginacionDto)
                                             .ToListAsync();
+
+            if (volcanes.Count < 1)
+                return Ok("No hay registros, pero puedes crear tus propios registros a este mismo endpoint");
             
             return volcanes;
         }

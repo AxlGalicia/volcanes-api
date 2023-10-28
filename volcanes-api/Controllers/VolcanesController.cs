@@ -33,9 +33,8 @@ namespace volcanes_api.Controllers
             _spaceService = spaceService;
             _headerService = headerService;
         }
-
+        
         [HttpGet]
-        [Authorize(Roles = "Admin,User")]
         public async Task<List<Volcan>> get([FromQuery] PaginacionDTO paginacionDto)
         {
             InformationMessage("Se ejecuto solicitud GET");
@@ -53,7 +52,6 @@ namespace volcanes_api.Controllers
         }
 
         [HttpGet("{id:int}")]
-        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<Volcan>> getId(int id)
         {
             InformationMessage("Se ejecuto solicitud GET by Id");
@@ -66,7 +64,6 @@ namespace volcanes_api.Controllers
         }
 
         [HttpGet("imagen/{id:int}")]
-        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult> getImage(int id)
         {
             InformationMessage("Se ejecuto solicitud GET by id Imagen");

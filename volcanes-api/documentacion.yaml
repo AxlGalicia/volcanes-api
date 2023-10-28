@@ -25,7 +25,7 @@ info:
   license:
     name: Link del Repositorio
     url: https://github.com/AxlGalicia/volcanes-api
-  version: v1.0.0
+  version: v1.1.1
 paths:
   /api/auth/register:
     post:
@@ -490,7 +490,7 @@ components:
           nullable: false
         password:
           type: string
-          nullable: true
+          nullable: false
           example: YKJ7yJrWdLKcIVH6
       additionalProperties: false
     Volcan:
@@ -588,6 +588,6 @@ components:
           example: volcan.png
       additionalProperties: false
 servers:
-  - url: https://miservidor.com
+  - url: https://api-test.lat
     variables: {}
     description: servidor de produccion

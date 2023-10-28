@@ -71,11 +71,12 @@ namespace volcanes_api
                     };
                 });
 
-            //services.AddCors(opciones => {
-            //    opciones.AddDefaultPolicy(builder => {
-            //        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            //    });
-            //});
+            services.AddCors(opciones => {
+                opciones.AddDefaultPolicy(builder => {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+                        .WithExposedHeaders(new string[]{ "cantidadTotalRegistros"});
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
