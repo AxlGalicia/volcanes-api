@@ -10,7 +10,8 @@ using volcanes_api.Models.DTOs;
 
 namespace volcanes_api.Controllers;
 
-[Route("api/auth")]
+//[Route("api/auth")]
+[Route("auth")]
 [ApiController]
 public class AuthController: ControllerBase
 {

@@ -15,7 +15,8 @@ using volcanes_api.Utilidades;
 namespace volcanes_api.Controllers
 {
     [ApiController]
-    [Route("api/volcanes_usuario")]
+    //[Route("api/volcanes_usuario")]
+    [Route("volcanes_usuario")]
     public class VolcanesUsuarioController : ControllerBase
     {
         private readonly volcanesDBContext _context;
