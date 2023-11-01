@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using volcanes_api.Models;
 using volcanes_api.Models.DTOs;
+using volcanes_api.Utilidades;
 
 namespace volcanes_api.Controllers;
 
-//[Route("api/auth")]
-[Route("auth")]
+[DynamicRoute("auth")]
 [ApiController]
 public class AuthController: ControllerBase
 {
@@ -105,8 +105,7 @@ public class AuthController: ControllerBase
                 new Claim(ClaimTypes.Role,"User")
             };
         }
-
-        //var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtKey"]));
+        
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JwtKey")));
 
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

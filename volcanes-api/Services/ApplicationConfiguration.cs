@@ -14,14 +14,6 @@ namespace volcanes_api.Services
 
         public ApplicationConfiguration(IConfiguration configuration)
         {
-            // AccessKey = configuration["AccessKey"];
-            // SecretAccessKey = configuration["SecretAccessKey"];
-            // SessionToken = configuration["SessionToken"];
-            // BucketName = configuration["BucketName"];
-            // Region = configuration["Region"];
-            // ServiceURL = configuration["ServiceURL"];
-            // SignatureVersion = configuration["SignatureVersion"];
-            
             AccessKey = Environment.GetEnvironmentVariable("AccessKey");
             SecretAccessKey = Environment.GetEnvironmentVariable("SecretAccessKey");
             SessionToken = Environment.GetEnvironmentVariable("SessionToken");

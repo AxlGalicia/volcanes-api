@@ -15,8 +15,7 @@ using volcanes_api.Utilidades;
 namespace volcanes_api.Controllers
 {
     [ApiController]
-    //[Route("api/volcanes_usuario")]
-    [Route("volcanes_usuario")]
+    [DynamicRoute("volcanes_usuario")]
     public class VolcanesUsuarioController : ControllerBase
     {
         private readonly volcanesDBContext _context;
@@ -83,14 +82,9 @@ namespace volcanes_api.Controllers
 
             if (response == null)
                 return NotFound("No se encontro registro de la imagen guardada");
-            // MemoryStream ms = new MemoryStream();
-            // response.CopyTo(ms);
-            // return File(ms.ToArray(),response.ContentType);
 
             return File(response.contenido,response.tipoContenido);
-
-            //return Content(response);
-            //return File(response.contenidoFile,response.tipoContenido,volcan.Imagen);
+            
         }
 
         [HttpPost]
@@ -117,7 +111,6 @@ namespace volcanes_api.Controllers
                 if (response.responseStatus)
                 {
                     InformationMessage("Se guardo correctamente la imagen.");
-                    //volcanDB.Imagen = volcan.Imagen.FileName;
                     volcanDB.Imagen = response.newName;
                 }
                 else

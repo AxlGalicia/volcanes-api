@@ -20,10 +20,11 @@ namespace volcanes_api
 
         public void ConfigureServices(IServiceCollection services) 
         {
+            DotNetEnv.Env.Load();
             services.AddControllers();
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1",new OpenApiInfo { 
-                    Version = "v1.0.0",
+                    Version = "v1.1.2",
                     Title = "Volcanes de Guatemala",
                     Description = "Esta API nos devuelve los volcanes de Guatemala con su descripcion, altura, ecosistema e imagen.",
                     Contact = new OpenApiContact { 
@@ -45,9 +46,6 @@ namespace volcanes_api
                 string conexion = Environment.GetEnvironmentVariable("ConnectionStrings");
                 options.UseMySql(conexion,ServerVersion.AutoDetect(conexion));
                 
-                //Variedad de opciones para utilizar Mysql o SqlServer
-                //options.UseMySql(Configuration["ConnectionStrings"],ServerVersion.AutoDetect(Configuration["ConnectionStrings"]));
-                //options.UseSqlServer(Configuration["ConnectionStrings"]);
             });
             services.AddLogging();
             services.AddSingleton<IConfiguration>(Configuration);
@@ -57,8 +55,7 @@ namespace volcanes_api
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
                 {
-                    //Esta variable no puede estar en desarrollo por seguridad
-                    //var tokenKey = Encoding.UTF8.GetBytes(Configuration["JwtKey"]);
+
                     var tokenKey = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("JwtKey"));
                     options.TokenValidationParameters = new TokenValidationParameters()
                     {
@@ -83,13 +80,11 @@ namespace volcanes_api
         {
             if (env.IsDevelopment())
             {
-
                 app.UseSwagger();
                 app.UseSwaggerUI();
-
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseRouting();
 

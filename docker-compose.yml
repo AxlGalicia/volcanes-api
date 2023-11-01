@@ -3,7 +3,7 @@
     build:
       context: .
       dockerfile: Dockerfile
-    image: volcanes:1.1.1
+    image: volcanes:1.1.2-Beta
     container_name: volcanes-api
     ports:
       - 5000:5000
