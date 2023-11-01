@@ -20,7 +20,7 @@ namespace volcanes_api
 
         public void ConfigureServices(IServiceCollection services) 
         {
-            DotNetEnv.Env.Load();
+            //DotNetEnv.Env.Load();
             services.AddControllers();
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1",new OpenApiInfo { 
