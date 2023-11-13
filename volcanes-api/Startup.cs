@@ -24,7 +24,7 @@ namespace volcanes_api
             services.AddControllers();
             services.AddSwaggerGen(options => {
                 options.SwaggerDoc("v1",new OpenApiInfo { 
-                    Version = "v1.1.2",
+                    Version = "v1.1.3",
                     Title = "Volcanes de Guatemala",
                     Description = "Esta API nos devuelve los volcanes de Guatemala con su descripcion, altura, ecosistema e imagen.",
                     Contact = new OpenApiContact { 
