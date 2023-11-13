@@ -30,4 +30,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove=".env.backup" />
+    <None Remove=".env" />
+  </ItemGroup>
+
 </Project>
